@@ -51,7 +51,7 @@ const T = {
     title: "⚡ Antalia-2 Mini ONNX (Tarayıcıda)",
     sub: "Tarayıcıda çevrimdışı Türkçe TTS. Dahili normalizer ile sayıları, tarihleri ve kısaltmaları otomatik okur. Sunucu yok — her şey cihazınızda olur.",
     ph: "Okunacak Türkçe metni yazın… (Örn: '15 Ekim saat 14:30'da 2.500 TL ödemeniz var.')",
-    ex: "Örnekler:", exT: ["Kısa", "Orta", "Uzun", "Sayı & Tarih", "Paragraf"],
+    ex: "Örnekler:", exT: ["Kısa", "Orta", "Uzun", "Sayı & Tarih", "Para & Yüzde", "Telefon & Adres", "Marka & Yabancı", "Kısaltma & Unvan", "Paragraf"],
     speed: "Hız:", say: "Sesi Üret", busy: "Üretiliyor…", stop: "Durdur",
     seed: "Seed:", first: "ilk ses",
     backend: "Motor:", beAuto: "Otomatik",
@@ -99,7 +99,7 @@ const T = {
     title: "⚡ Antalia-2 Mini ONNX (in-browser)",
     sub: "Offline Turkish TTS in your browser. Automatically reads numbers, dates, and abbreviations with built-in normalizer. No server — runs on your device.",
     ph: "Type Turkish text to speak… (e.g. '15 Ekim saat 14:30'da 2.500 TL ödemeniz var.')",
-    ex: "Examples:", exT: ["Short", "Medium", "Long", "Number & Date", "Paragraph"],
+    ex: "Examples:", exT: ["Short", "Medium", "Long", "Number & Date", "Money & %", "Phone & Address", "Brands & English", "Abbr. & Titles", "Paragraph"],
     speed: "Speed:", say: "Speak", busy: "Working…", stop: "Stop",
     seed: "Seed:", first: "first audio",
     backend: "Engine:", beAuto: "Auto",
@@ -144,25 +144,64 @@ const EXAMPLES = [
     "Günaydın, hayırlı sabahlar dilerim.",
     "Siparişiniz yola çıktı bile.",
     "Hava bugün gerçekten çok güzel.",
-    "Randevunuz onaylandı, teşekkürler."
+    "Randevunuz onaylandı, teşekkürler.",
+    "Evet, hemen bakıyorum.",
+    "Tamamdır, not aldım.",
+    "Geçmiş olsun, acil şifalar dilerim."
   ],
   [ // Orta
     "Siparişiniz yola çıktı, yarın sabah kapınızda olacak.",
     "Sabah erken kalktım, kahvaltı edip sahilde yürüyüş yaptım.",
     "Doktor randevum öğleden sonraydı, biraz beklemek zorunda kaldım.",
-    "Yeni komşularımız dün taşındı, akşam çaya davet ettiler."
+    "Yeni komşularımız dün taşındı, akşam çaya davet ettiler.",
+    "Toplantımız yarın saat 10'da, lütfen geç kalmayın.",
+    "Kargonuz dağıtıma çıktı, bugün teslim edilecek."
   ],
   [ // Uzun
     "Dün akşam annemlerle konuştuk, herkesin keyfi yerindeydi, bayramda memlekete gitmeyi planlıyoruz hep birlikte.",
     "Sabah işe giderken otobüsü kaçırdım, sonraki durağa kadar yürüdüm, neyse ki toplantıya son anda yetiştim.",
-    "Hafta sonu evde büyük temizlik yaptık, camları sildik, akşam yorgunluktan erkenden uyuduk."
+    "Hafta sonu evde büyük temizlik yaptık, camları sildik, akşam yorgunluktan erkenden uyuduk.",
+    "Uzun bir günün ardından eve döndüm, sıcak bir çay koyup pencerenin önüne oturdum ve yağmuru izledim.",
+    "Çocuklar bahçede top oynarken biz de komşularla sohbet ettik, akşam ezanıyla birlikte herkes evine dağıldı."
   ],
   [ // Sayi & Tarih (Antalia normalizer gucu!)
     "15 Ekim Çarşamba günü saat 14:30'da randevunuz bulunmaktadır.",
     "Toplam borcunuz 2.450 TL olup, %18 KDV dahildir.",
     "Sayın Dr. Ahmet Bey, SGK işlemleriniz için saat 10'da bekleniyorsunuz.",
     "Uçuşunuz THY ile saat 09:15'te kalkacaktır, iyi yolculuklar.",
-    "Marketten 5 kg un, 2 lt süt ve 1 düzine yumurta aldım."
+    "Marketten 5 kg un, 2 lt süt ve 1 düzine yumurta aldım.",
+    "Doğum günüm 3 Mart 1990, ehliyetimi 2012'de aldım.",
+    "Saat 09:05'te kalkan tren 11:45'te varacak.",
+    "Sınavdan 92 aldım, sınıf ortalaması 68,5'miş.",
+    "II. Abdülhamid döneminde 2. Meşrutiyet ilan edildi."
+  ],
+  [ // Para & Yuzde
+    "Toplam 1.250,75 TL, %18 KDV dahil.",
+    "Hesabınıza 500 dolar ve 250 avro yatırıldı.",
+    "Kredi kartına 12 taksit, peşin ödemede %10 indirim.",
+    "Ekmek 15 lira, süt 42,5 lira olmuş.",
+    "2.350 liralık borcunuzun son ödeme tarihi yarın."
+  ],
+  [ // Telefon & Adres
+    "Bizi 0212 555 12 34 numaralı telefondan arayabilirsiniz.",
+    "Sipariş takibi için destek@ornek.com adresine yazın.",
+    "Adresimiz Atatürk Cad. No: 12 D: 4, Kadıköy.",
+    "Tüm detaylar www.ornek.com sitesinde yer alıyor.",
+    "+90 532 123 45 67 numaralı hatta WhatsApp'tan ulaşın."
+  ],
+  [ // Marka & Yabanci
+    "Toplantı linkini WhatsApp üzerinden gönderdim.",
+    "Yeni iPhone'un kamerası gerçekten çok iyiymiş.",
+    "GitHub reposuna dünkü toplantıdan önce yükledim.",
+    "Akşam Netflix'te güzel bir film izledik.",
+    "PatientDesk randevunuz yarın saat 10'da."
+  ],
+  [ // Kisaltma & Unvan
+    "Sayın Prof. Dr. Ahmet Yılmaz kürsüye davet edildi.",
+    "SGK işlemleriniz için T.C. kimlik numaranız gerekli.",
+    "THY uçağı saat 09:15'te kalkıyor.",
+    "Mahallemizdeki ATM dün akşamdan beri çalışmıyor.",
+    "Tamam, SMS ile gelen onay kodunu girdim."
   ],
   [ // Paragraf
     "Sabahın erken saatlerinde liman henüz uyanmamıştı. Balıkçılar ağlarını sessizce topluyor, martılar teknelerin etrafında dönüyordu. Sahilde yürürken temiz havayı içime çektim, dalgaların kıyıya vuruşunu dinledim. Fırından taze sıcak ekmek alıp eve döndüm."
