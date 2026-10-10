@@ -32,7 +32,7 @@ jobs:
           ls -lh models vocab.json
           python -c "import onnx, json; [onnx.load(f'models/{n}.onnx') for n in ('text_stage','sound_stage','decoder')]; d = json.load(open('models/foreign_dict.json')); print('onnx & dict ok, entries:', len(d))"
           python scripts/build_web_dicts.py --check
-          node --test tests/test_normalize.mjs
+          node --test tests/test_normalize.mjs tests/test_audio.mjs
       - name: Push models to HuggingFace
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

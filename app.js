@@ -25,60 +25,9 @@ const PREFIX = "ee, ";
 const SUFFIX = " ee.";
 const PREFIX_INITIALS = new Set(["ö", "ı"]);
 
-// Stüdyo Ses Son İşleme (antalia_mini post.py RBJ Biquad Filtreleri)
-// 1. 90 Hz High-Pass: DC kayması ve sub-bass uğultusunu keser
-// 2. 210 Hz Low-Shelf (-5 dB): boğukluğu giderir, konuşmayı berraklaştırır
-// 3. Make-up Gain (+0.54 dB): ses şiddetini dengeler
-// 4. Soft-Knee Peak Limiter: dijital clipping (cızırtı/çıtırtı) riskini önler
-const HPF_COEFFS = {
-  b0: 0.9917029581768267, b1: -1.9834059163536535, b2: 0.9917029581768267,
-  a1: -1.9833370948844034, a2: 0.9834747378229038
-};
-const SHELF_COEFFS = {
-  b0: 0.9944017033785219, b1: -1.9553249800432573, b2: 0.9614774186259423,
-  a1: -1.9551093414039344, a2: 0.9560947606437868
-};
-const LIMIT_THRESH = Math.pow(10, -1.0 / 20); // ~0.89125 (-1 dBFS)
-const LIMIT_CEIL = Math.pow(10, -0.1 / 20);   // ~0.98855 (-0.1 dBFS)
-const LIMIT_ROOM = LIMIT_CEIL - LIMIT_THRESH;
-const MAKEUP_GAIN = Math.pow(10, 0.54 / 20);  // ~1.064161 (+0.54 dB)
-
-class Biquad {
-  constructor(c) {
-    this.b0 = c.b0; this.b1 = c.b1; this.b2 = c.b2;
-    this.a1 = c.a1; this.a2 = c.a2;
-    this.x1 = 0; this.x2 = 0;
-    this.y1 = 0; this.y2 = 0;
-  }
-  process(x) {
-    const y = new Float32Array(x.length);
-    let { b0, b1, b2, a1, a2, x1, x2, y1, y2 } = this;
-    for (let i = 0; i < x.length; i++) {
-      const v = x[i];
-      const out = b0 * v + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
-      x2 = x1; x1 = v;
-      y2 = y1; y1 = out;
-      y[i] = out;
-    }
-    this.x1 = x1; this.x2 = x2;
-    this.y1 = y1; this.y2 = y2;
-    return y;
-  }
-}
-
-function postProcessAudio(samples, hpf, shelf) {
-  let s = hpf.process(samples);
-  s = shelf.process(s);
-  for (let i = 0; i < s.length; i++) {
-    let v = s[i] * MAKEUP_GAIN;
-    const a = Math.abs(v);
-    if (a > LIMIT_THRESH) {
-      v = Math.sign(v) * (LIMIT_THRESH + LIMIT_ROOM * Math.tanh((a - LIMIT_THRESH) / LIMIT_ROOM));
-    }
-    s[i] = v;
-  }
-  return s;
-}
+// Stüdyo Ses Son İşleme: audio.js (antalia_mini post.py OutputChain tone yolu:
+// 210 Hz low-shelf +6 dB -> 4 kHz high-shelf -9 dB -> soft limiter, gain 1.0).
+// Filtre nesneleri synthPieces'te parcalar arasi tasinir (orijinalle ayni).
 
 // Antalia 47 sembol (normalize.js ile tek kaynaktan; drift onlemek icin referans)
 const SYMBOLS = AntaliaText.SYMBOLS;
@@ -493,10 +442,11 @@ async function* synthPieces(text, speed, seed, stats = null) {
   const tick = (key, t0) => { if (stats) stats[key] = (stats[key] || 0) + performance.now() - t0; };
 
   // Akış parçaları boyunca biquad filtre geçmişi korunur (antalia_mini StreamFIR ile birebir aynı)
-  const hpf = new Biquad(HPF_COEFFS);
-  const shelf = new Biquad(SHELF_COEFFS);
+  const low = new AntaliaAudio.Biquad(AntaliaAudio.TONE_LOW);
+  const high = new AntaliaAudio.Biquad(AntaliaAudio.TONE_HIGH);
 
-  for (const part of chunks) {
+  for (let k = 0; k < chunks.length; k++) {
+    const part = chunks[k];
     // 0. Ön Ek & Son Ek (ö ve ı başlangıcındaki parazit "l" artefaktını gidermek ve bitiş kırpılmasını önlemek için)
     const trimmed = part.trim();
     const firstChar = trimmed[0];
@@ -621,8 +571,17 @@ async function* synthPieces(text, speed, seed, stats = null) {
       for (let i = 0; i < fadeSamples; i++) chunkWav[chunkWav.length - 1 - i] *= (i / fadeSamples);
     }
 
-    // 4. Stüdyo Ses Son İşleme (90 Hz HPF + 210 Hz Low-Shelf EQ + Make-up Gain + Soft-Knee Limiter)
-    const audio = postProcessAudio(chunkWav, hpf, shelf);
+    // 4. Stüdyo Ses Son İşleme (audio.js: tone yolu; orijinal OutputChain ile ayni)
+    // 5. Parca arasi sessizlik (api.py _pause: cumle 0.12 sn, diger 0.06 sn;
+    //    son parca haric; EQ'dan once eklenir, filtre durumu tasinir)
+    let framed = chunkWav;
+    if (k < chunks.length - 1) {
+      const pauseLen = Math.round(AntaliaAudio.pauseSec(part) * RATE);
+      const withPause = new Float32Array(chunkWav.length + pauseLen);
+      withPause.set(chunkWav);
+      framed = withPause;
+    }
+    const audio = AntaliaAudio.postProcessAudio(framed, low, high);
 
     yield { audio, words, starts, seconds: audio.length / RATE };
   }
