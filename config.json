@@ -1,0 +1,135 @@
+{
+  "model_type": "antalia-mini",
+  "format_version": 1,
+  "version": "1.0.0",
+  "sample_rate": 48000,
+  "acoustic": {
+    "n_symbols": 47,
+    "n_mels": 128,
+    "d_text": 192,
+    "text_convnext": 3,
+    "text_hidden": 384,
+    "text_attn": 1,
+    "heads": 4,
+    "d_dur": 128,
+    "d_gen": 192,
+    "gen_blocks": 5,
+    "gen_hidden": 512,
+    "d_time": 128,
+    "stack": 2,
+    "cond_drop": 0.1,
+    "shortcut_frac": 0.25,
+    "shortcut_levels": 7,
+    "mel_mean": -5.9,
+    "mel_std": 2.6,
+    "max_dur_frames": 60
+  },
+  "vocoder": {
+    "n_mels": 128,
+    "dim": 256,
+    "hidden": 768,
+    "layers": 8,
+    "n_fft": 2048,
+    "hop": 512,
+    "sample_rate": 48000
+  },
+  "symbols": [
+    "<pad>",
+    "<bos>",
+    "<eos>",
+    " ",
+    ".",
+    ",",
+    "?",
+    "!",
+    "'",
+    "-",
+    ":",
+    ";",
+    "a",
+    "b",
+    "c",
+    "ç",
+    "d",
+    "e",
+    "f",
+    "g",
+    "ğ",
+    "h",
+    "ı",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "ö",
+    "p",
+    "q",
+    "r",
+    "s",
+    "ş",
+    "t",
+    "u",
+    "ü",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+    "â",
+    "î",
+    "û"
+  ],
+  "defaults": {
+    "steps": 8,
+    "cfg": 2.0,
+    "speed": 0.95,
+    "temperature": 0.6
+  },
+  "options": {
+    "suffix": " ee.",
+    "prefix": "ee, ",
+    "prefix_initials": "öı",
+    "gem_stretch": 1.3,
+    "tone": [
+      6.0,
+      -9.0
+    ]
+  },
+  "params": {
+    "acoustic": 3686977,
+    "vocoder": 3933954,
+    "total": 7620931
+  },
+  "source": {
+    "acoustic": {
+      "file": "ac-main-short.pt",
+      "step": 51880,
+      "weights": "ema"
+    },
+    "vocoder": {
+      "file": "voc-gta3-76860.pt",
+      "step": 76860
+    }
+  },
+  "files": {
+    "acoustic.safetensors": {
+      "bytes": 14757148,
+      "sha256": "72c36a6855ce95dc1d35960a7b61515136813313406e5b9ae1c2ebe6cd2ad428"
+    },
+    "vocoder.safetensors": {
+      "bytes": 15742616,
+      "sha256": "89ca374cc55864b38a36f9ea87c41e1b17376e5d6d68e3a0458332861509bbf6"
+    },
+    "acoustic.fp16.safetensors": {
+      "bytes": 7383130,
+      "sha256": "c94d5cbe11df77dbc293a85782c28eac377a5f9b8027ca2270cc9b2b51f35d87"
+    },
+    "vocoder.fp16.safetensors": {
+      "bytes": 7874644,
+      "sha256": "a5ba4b559daccf93c0ac888d50a198c810ab95554b3be6df937dac690d6fbcee"
+    }
+  }
+}

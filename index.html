@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description"
+    content="Antalia-2 Mini ONNX: tarayıcıda çevrimdışı Türkçe metinden sese (TTS). Offline Turkish TTS in your browser. Sayı, tarih ve kısaltma okur. Sunucu yok, ses cihazdan çıkmaz.">
+  <link rel="canonical" href="https://fr0stb1rd.github.io/antalia-mini-web/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Antalia-2 Mini Web">
+  <meta property="og:url" content="https://fr0stb1rd.github.io/antalia-mini-web/">
+  <meta property="og:title" content="Antalia-2 Mini ONNX — Tarayıcıda Çevrimdışı Türkçe TTS">
+  <meta property="og:description"
+    content="Offline Turkish TTS in your browser. Sunucu yok — her şey cihazınızda olur. No server — everything runs on your device.">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:image" content="https://fr0stb1rd.github.io/antalia-mini-web/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Antalia-2 Mini ONNX — Offline Turkish TTS in your browser">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://fr0stb1rd.github.io/antalia-mini-web/og.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+  <meta name="twitter:title" content="Antalia-2 Mini ONNX — Tarayıcıda Çevrimdışı Türkçe TTS">
+  <meta name="twitter:description"
+    content="Offline Turkish TTS in your browser. No server — everything runs on your device.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Antalia-2 Mini Web (ONNX)",
+    "alternateName": "Tarayıcıda Çevrimdışı Türkçe TTS",
+    "url": "https://fr0stb1rd.github.io/antalia-mini-web/",
+    "inLanguage": ["tr", "en"],
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web browser",
+    "offers": { "@type": "Offer", "price": "0" },
+    "license": "https://github.com/fr0stb1rd/antalia-mini-web/blob/main/LICENSE",
+    "sameAs": [
+      "https://github.com/fr0stb1rd/antalia-mini-web",
+      "https://huggingface.co/fr0stb1rd/antalia-mini-web-onnx",
+      "https://huggingface.co/cloud0day3/antalia-mini"
+    ]
+  }
+  </script>
+  <title>Antalia-2 Mini ONNX — Tarayıcıda Türkçe TTS</title>
+  <script>try { var p = JSON.parse(localStorage.getItem("antalia-mini-web-prefs") || "{}"); if (p.theme === "light" || p.theme === "dark") document.documentElement.setAttribute("data-theme", p.theme); } catch (e) { }</script>
+  <style>
+    :root,
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #ffffff;
+      --fg: #1a1a1a;
+      --muted: #666;
+      --box: #f4f4f5;
+      --line: #e2e2e5;
+      --btn: #1a1a1a;
+      --btn-fg: #fff;
+      --btn-dis: #b9b9bd;
+      --bar: #e7e7ea;
+      --fill: #1a1a1a;
+      --chip: #eef0ff;
+      --chip-fg: #2b3a9e;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #141416;
+      --fg: #ececee;
+      --muted: #a1a1aa;
+      --box: #1d1d20;
+      --line: #2c2c31;
+      --btn: #ececee;
+      --btn-fg: #141416;
+      --btn-dis: #4b4b52;
+      --bar: #2a2a30;
+      --fill: #ececee;
+      --chip: #23263d;
+      --chip-fg: #c3cbff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) {
+        color-scheme: dark;
+        --bg: #141416;
+        --fg: #ececee;
+        --muted: #a1a1aa;
+        --box: #1d1d20;
+        --line: #2c2c31;
+        --btn: #ececee;
+        --btn-fg: #141416;
+        --btn-dis: #4b4b52;
+        --bar: #2a2a30;
+        --fill: #ececee;
+        --chip: #23263d;
+        --chip-fg: #c3cbff;
+      }
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 1.25rem max(1rem, env(safe-area-inset-left)) calc(3rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-right));
+      line-height: 1.55
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--fill);
+      outline-offset: 2px
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      margin: 0
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      flex-wrap: wrap;
+      margin: .2rem 0 .3rem
+    }
+
+    p.sub {
+      color: var(--muted);
+      font-size: .9rem;
+      margin: 0 0 .8rem
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      font: inherit;
+      color: var(--fg);
+      background: var(--box);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: .6rem;
+      resize: vertical
+    }
+
+    .row {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: .6rem 0
+    }
+
+    .row .say,
+    .row .dl {
+      flex: 1 1 0;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .dice {
+      padding: .35rem .55rem;
+      flex: none
+    }
+
+    label.speed {
+      font-size: .9rem;
+      color: var(--muted)
+    }
+
+    input[type=number] {
+      font: inherit;
+      width: 3.2rem;
+      color: var(--fg);
+      background: var(--box);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: .35rem .4rem
+    }
+
+    button {
+      font: inherit;
+      padding: .55rem .8rem;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--btn);
+      color: var(--btn-fg)
+    }
+
+    button:disabled {
+      background: var(--btn-dis);
+      cursor: default
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(128, 128, 128, 0)
+      }
+
+      50% {
+        box-shadow: 0 0 0 6px rgba(128, 128, 128, .12)
+      }
+    }
+
+    .say.pulse {
+      animation: pulse 2.4s ease-in-out infinite
+    }
+
+    button.ghost {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--line)
+    }
+
+    .ex {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: .2rem 0 .6rem
+    }
+
+    .ex button {
+      background: var(--chip);
+      color: var(--chip-fg);
+      font-size: .78rem;
+      padding: .3rem .55rem
+    }
+
+    .bar {
+      height: 8px;
+      background: var(--bar);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: .15rem 0 .35rem
+    }
+
+    .out {
+      background: var(--box);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: .55rem .75rem;
+      margin: .6rem 0
+    }
+
+    .bar>i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--fill);
+      border-radius: 99px;
+      transition: width .15s linear
+    }
+
+    .stats {
+      font-size: .83rem;
+      color: var(--muted);
+      min-height: 1.4em;
+      font-variant-numeric: tabular-nums
+    }
+
+    .status {
+      font-size: .9rem;
+      margin: .5rem 0
+    }
+
+    audio {
+      width: 100%;
+      margin-top: .4rem
+    }
+
+    .hh h2 {
+      font-size: 1rem;
+      margin: 1rem 0 .3rem
+    }
+
+    .hrow {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      padding: .4rem 0;
+      border-top: 1px solid var(--line);
+      font-size: .85rem
+    }
+
+    .ht {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .hm {
+      color: var(--muted);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums
+    }
+
+    .hrow button {
+      font-size: .8rem;
+      padding: .3rem .6rem
+    }
+
+    .foot {
+      margin-top: 1.6rem;
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .foot a {
+      color: inherit
+    }
+
+    .set {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin: 0
+    }
+
+    .set label {
+      font-size: .82rem;
+      color: var(--muted);
+      display: flex;
+      gap: .3rem;
+      align-items: center
+    }
+
+    select {
+      font: inherit;
+      font-size: .85rem;
+      color: var(--fg);
+      background: var(--box);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: .3rem .4rem
+    }
+
+    [hidden] {
+      display: none !important
+    }
+
+    .faq h2 {
+      font-size: 1rem;
+      margin: 1.2rem 0 .3rem
+    }
+
+    .faq details {
+      border-top: 1px solid var(--line);
+      padding: .4rem 0;
+      font-size: .88rem
+    }
+
+    .faq summary {
+      cursor: pointer
+    }
+
+    .faq details p {
+      margin: .3rem 0 0;
+      color: var(--muted)
+    }
+
+    .store {
+      margin-top: 1rem
+    }
+
+    .store button {
+      font-size: .8rem;
+      padding: .35rem .7rem
+    }
+
+    .beeff {
+      color: var(--muted);
+      font-size: .8rem;
+      font-variant-numeric: tabular-nums
+    }
+
+    .now {
+      font-size: .92rem;
+      min-height: 1.5em
+    }
+
+    .now span {
+      opacity: .35
+    }
+
+    .now span.said {
+      opacity: .75
+    }
+
+    .now span.on {
+      opacity: 1;
+      font-weight: 600
+    }
+
+    textarea.txt {
+      max-height: 40vh
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <noscript>
+    <p>Bu uygulama için JavaScript gerekli. / This app requires JavaScript.</p>
+  </noscript>
+  <script src="https://cdn.jsdelivr.net/npm/@geajs/core@1.5.1/dist/gea-runtime.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.min.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
