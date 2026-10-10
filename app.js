@@ -80,13 +80,9 @@ function postProcessAudio(samples, hpf, shelf) {
   return s;
 }
 
-// Antalia 47 sembol
-const SYMBOLS = [
-  "<pad>", "<bos>", "<eos>", " ", ".", ",", "?", "!", "'", "-", ":", ";",
-  "a", "b", "c", "ç", "d", "e", "f", "g", "ğ", "h", "ı", "i", "j", "k", "l", "m", "n", "o", "ö",
-  "p", "q", "r", "s", "ş", "t", "u", "ü", "v", "w", "x", "y", "z", "â", "î", "û"
-];
-const STOI = Object.fromEntries(SYMBOLS.map((s, i) => [s, i]));
+// Antalia 47 sembol (normalize.js ile tek kaynaktan; drift onlemek icin referans)
+const SYMBOLS = AntaliaText.SYMBOLS;
+const STOI = AntaliaText.SYMBOL_TO_ID;
 
 /* ---------- i18n & Tercihler ---------- */
 const BROWSER_TR = (navigator.language || "tr").toLowerCase().startsWith("tr");
@@ -224,240 +220,46 @@ const EXAMPLES = [
   ]
 ];
 
-/* ---------- TÜRKÇE NORMALİZER (PatientDesk AI Kuralları) ---------- */
-const ONES = ["sıfır", "bir", "iki", "üç", "dört", "beş", "altı", "yedi", "sekiz", "dokuz"];
-const TENS = ["", "on", "yirmi", "otuz", "kırk", "elli", "altmış", "yetmiş", "seksen", "doksan"];
+/* ---------- TÜRKÇE NORMALİZER (normalize.js: orijinal Python ile birebir) ----------
+ * normalize.js -> antalia_mini/text (turkish-tts @ 3ed2e60) portu.
+ * Sozlukler: foreign_dict + foreign_parts + known_words + english_i
+ * (HF: MODEL_BASE, geri-donus: yerel models/). Hepsi Cache Storage ile onbellekli. */
+const TEXT_DICT_FILES = ["foreign_dict.json", "foreign_parts.json", "known_words.json", "english_i.json"];
+let textDataReady = null;
 
-function numberToTurkish(n) {
-  n = Math.floor(Math.abs(n));
-  if (n === 0) return "sıfır";
-  if (n < 10) return ONES[n];
-  if (n < 100) {
-    const tens = Math.floor(n / 10), rem = n % 10;
-    return rem === 0 ? TENS[tens] : `${TENS[tens]} ${ONES[rem]}`;
+async function loadJsonDict(name) {
+  try {
+    const { res } = await cachedResponse(`${MODEL_BASE}/${name}`);
+    return await res.json();
+  } catch (e) {
+    const local = await fetch(`models/${name}`);
+    if (!local.ok) throw new Error(`${name} indirilemedi (${e.message || e})`);
+    return await local.json();
   }
-  if (n < 1000) {
-    const h = Math.floor(n / 100), rem = n % 100;
-    const hStr = h === 1 ? "yüz" : `${ONES[h]} yüz`;
-    return rem === 0 ? hStr : `${hStr} ${numberToTurkish(rem)}`;
-  }
-  if (n < 1000000) {
-    const th = Math.floor(n / 1000), rem = n % 1000;
-    const thStr = th === 1 ? "bin" : `${numberToTurkish(th)} bin`;
-    return rem === 0 ? thStr : `${thStr} ${numberToTurkish(rem)}`;
-  }
-  if (n < 1000000000) {
-    const m = Math.floor(n / 1000000), rem = n % 1000000;
-    const mStr = `${numberToTurkish(m)} milyon`;
-    return rem === 0 ? mStr : `${mStr} ${numberToTurkish(rem)}`;
-  }
-  const b = Math.floor(n / 1000000000), rem = n % 1000000000;
-  const bStr = `${numberToTurkish(b)} milyar`;
-  return rem === 0 ? bStr : `${bStr} ${numberToTurkish(rem)}`;
 }
 
-const MONTHS = {
-  "01": "ocak", "1": "ocak", "02": "şubat", "2": "şubat", "03": "mart", "3": "mart",
-  "04": "nisan", "4": "nisan", "05": "mayıs", "5": "mayıs", "06": "haziran", "6": "haziran",
-  "07": "temmuz", "7": "temmuz", "08": "ağustos", "8": "ağustos", "09": "eylül", "9": "eylül",
-  "10": "ekim", "11": "kasım", "12": "aralık"
-};
-
-const DOTTED_ABBR = {
-  "dr.": "doktor", "prof.": "profesör", "doç.": "doçent", "uzm.": "uzman",
-  "vb.": "ve benzeri", "vs.": "vesaire", "örn.": "örneğin", "no.": "numara",
-  "mah.": "mahallesi", "cad.": "caddesi", "sok.": "sokak", "apt.": "apartmanı"
-};
-
-const NUMBER_UNITS = {
-  "km": "kilometre", "m": "metre", "cm": "santimetre", "mm": "milimetre",
-  "kg": "kilogram", "gr": "gram", "mg": "miligram",
-  "lt": "litre", "ml": "mililitre",
-  "sa": "saat", "dk": "dakika", "sn": "saniye",
-  "tl": "lira", "kb": "kilobayt", "mb": "megabayt", "gb": "gigabayt"
-};
-
-const ACRONYMS = {
-  "SGK": "segeka", "TBMM": "tebememe", "ATM": "ateme", "COVID": "kovid",
-  "SMS": "esemes", "NTV": "entivi", "YÖK": "yök", "BİM": "bim", "ŞOK": "şok",
-  "MEB": "meb", "İTÜ": "itü", "IBAN": "iban", "İETT": "ietete", "ALO": "alo",
-  "MİT": "mit", "OK": "okey", "CEO": "siio", "PR": "piar", "DJ": "dijey",
-  "TV": "tivi", "FBI": "efbiay", "CNN": "sienen", "VIP": "viaypi", "HD": "heyçdi",
-  "THY": "teheye"
-};
-
-// Yabancı marka ve teknoloji sözcükleri (foreign.py & lexicon.json uyumlu)
-const FOREIGN_WORDS = {
-  "youtube": "yutub", "iphone": "ayfon", "apple": "epıl", "google": "gugıl",
-  "whatsapp": "vatsap", "twitter": "tvitır", "instagram": "instagram",
-  "chatgpt": "çet ci pi ti", "openai": "opın ey ay", "ai": "ey ay",
-  "copilot": "kopilot", "online": "onlayn", "offline": "oflayn",
-  "email": "imeyl", "mail": "meyl", "wifi": "vayfay", "wi-fi": "vayfay",
-  "bluetooth": "blutut", "android": "endroyd", "netflix": "netfliks",
-  "spotify": "spotifay", "xbox": "iksboks", "playstation": "pleysteyşın",
-  "meeting": "miting", "feedback": "fidbek", "deadline": "dedlayn",
-  "startup": "startap", "link": "link", "podcast": "podkast",
-  "tiktok": "tiktok", "zoom": "zum", "linkedin": "linktin",
-  "github": "githab", "discord": "diskord", "amazon": "amazon"
-};
-
-/* ---------- Yabancı Sözcük Fonetik Sözlüğü (CMU + tr_vocab) ---------- */
-let foreignDict = {};
-let foreignDictLoaded = false;
-
-async function loadForeignDict() {
-  if (foreignDictLoaded) return foreignDict;
-  try {
-    const { res } = await cachedResponse(`${MODEL_BASE}/foreign_dict.json`);
-    foreignDict = await res.json();
-    foreignDictLoaded = true;
-  } catch (e) {
-    try {
-      const local = await fetch("foreign_dict.json");
-      if (local.ok) {
-        foreignDict = await local.json();
-        foreignDictLoaded = true;
-      }
-    } catch {}
+async function loadTextData() {
+  if (!textDataReady) {
+    textDataReady = (async () => {
+      const [foreign, parts, known, englishI] = await Promise.all(TEXT_DICT_FILES.map(loadJsonDict));
+      AntaliaText.setData({ foreign, parts, known, englishI });
+      return true;
+    })().catch((e) => { textDataReady = null; throw e; });
   }
-  return foreignDict;
+  return textDataReady;
 }
 
 // Sayfa ilk yüklendiğinde arka planda sessizce indir ve önbelleğe al
 if (typeof window !== "undefined") {
-  setTimeout(() => loadForeignDict().catch(() => {}), 100);
-}
-
-function splitCamel(word) {
-  return word.match(/[A-Z]{2,}(?=[A-Z][a-z]|\b|[0-9]|$)|[A-Z]?[a-z]+|[A-Z]+|[0-9]+/g) || [word];
-}
-
-function lookupForeignWord(w) {
-  const lw = w.toLowerCase();
-  if (foreignDict[lw]) return foreignDict[lw];
-  if (FOREIGN_WORDS[lw]) return FOREIGN_WORDS[lw];
-  // CamelCase (Örn: PatientDesk -> peyşınt desk, ChatGPT -> çet ci pi ti)
-  if (w.length > 2 && /[a-z]/.test(w) && /[A-Z]/.test(w.slice(1))) {
-    const parts = splitCamel(w);
-    if (parts.length > 1) {
-      return parts.map(p => lookupForeignWord(p)).join(" ");
-    }
-  }
-  return w;
-}
-
-const ROMAN_NUMERALS = {
-  "I": "birinci", "II": "ikinci", "III": "üçüncü", "IV": "dördüncü",
-  "V": "beşinci", "VI": "altıncı", "VII": "yedinci", "VIII": "sekizinci",
-  "IX": "dokuzuncu", "X": "onuncu", "XX": "yirminci", "XXI": "yirmi birinci"
-};
-
-function turkishLower(str) {
-  return str.replace(/İ/g, "i").replace(/I/g, "ı").toLowerCase();
+  setTimeout(() => loadTextData().catch(() => {}), 100);
 }
 
 function normalizeTurkishText(raw) {
-  if (!raw) return "";
-  let text = raw.normalize("NFC");
-  text = text.replace(/[\u2018\u2019\u0060\u00B4]/g, "'").replace(/[\u201C\u201D\u00AB\u00BB]/g, "");
-  text = text.replace(/[()]/g, ",");
-
-  // E-postalar (Örn: info@site.com -> info et site nokta kom)
-  text = text.replace(/\b([a-z0-9._%+-]+)@([a-z0-9.-]+)\.([a-z]{2,})\b/gi, (_, u, d, t) => {
-    return `${u} et ${d} nokta ${t.toLowerCase() === "com" ? "kom" : t}`;
-  });
-
-  // Web adresleri (Örn: www.google.com -> dabılyu dabılyu dabılyu nokta google nokta kom)
-  text = text.replace(/\b(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+)\.(com|net|org|gov|edu|info|io|ai|tr)\b/gi, (_, d, t) => {
-    return `dabılyu dabılyu dabılyu nokta ${d} nokta ${t.toLowerCase() === "com" ? "kom" : t}`;
-  });
-
-  // Yabancı sözcükler ve marka telaffuzları (CMU + tr_vocab 80k+ fonetik sözlük ve CamelCase desteği)
-  text = text.replace(/\b[A-Za-z0-9]+(?:['’][a-zçğıöşü]+)?\b/g, (token) => {
-    const apostropheIdx = token.search(/['’]/);
-    const word = apostropheIdx !== -1 ? token.slice(0, apostropheIdx) : token;
-    const suffix = apostropheIdx !== -1 ? token.slice(apostropheIdx) : "";
-    const respelled = lookupForeignWord(word);
-    if (respelled !== word) {
-      return respelled + suffix;
-    }
-    return token;
-  });
-
-  // Roma rakamları (Örn: XX. yüzyıl -> yirminci yüzyıl)
-  for (const [k, v] of Object.entries(ROMAN_NUMERALS)) {
-    text = text.replace(new RegExp(`\\b${k}\\.(?=\\s+[A-ZÇĞİÖŞÜa-zçğıöşü])`, "g"), `${v} `);
-  }
-
-  // Büyük harf kısaltmalar (SGK, TBMM, vb.)
-  for (const [k, v] of Object.entries(ACRONYMS)) {
-    text = text.replace(new RegExp(`\\b${k}\\b`, "g"), v);
-  }
-
-  // Noktalı unvan/kısaltmalar (dr., prof., vb.)
-  for (const [k, v] of Object.entries(DOTTED_ABBR)) {
-    const escK = k.replace(/\./g, "\\.");
-    text = text.replace(new RegExp(`\\b${escK}(?=\\s|[A-ZÇĞİÖŞÜa-zçğıöşü]|$)`, "gi"), v);
-  }
-
-  // Tarih kalıpları (Örn: 15.10.2026 veya 15/10/2026)
-  text = text.replace(/\b(\d{1,2})[./](\d{1,2})[./](\d{4})\b/g, (_, d, m, y) => {
-    return `${numberToTurkish(parseInt(d, 10))} ${MONTHS[m] || numberToTurkish(parseInt(m, 10))} ${numberToTurkish(parseInt(y, 10))}`;
-  });
-
-  // Saat kalıpları (Örn: 14:30)
-  text = text.replace(/\b(\d{1,2}):(\d{2})\b/g, (_, h, m) => {
-    const mInt = parseInt(m, 10);
-    return `${numberToTurkish(parseInt(h, 10))}${mInt === 0 ? "" : " " + numberToTurkish(mInt)}`;
-  });
-
-  // Binlik basamak ayıracı noktaları temizle (Örn: 2.500 -> 2500)
-  text = text.replace(/\b(\d{1,3}(?:\.\d{3})+)\b/g, (m) => m.replace(/\./g, ""));
-
-  // Negatif sayılar (Örn: -5 derece -> eksi beş derece)
-  text = text.replace(/(^|\s)-(\d+)\b/g, (_, lead, n) => `${lead}eksi ${numberToTurkish(parseInt(n, 10))}`);
-
-  // Ondalık / virgüllü sayılar (Örn: 3,5 kg -> üç buçuk kg; 4,2 -> dört virgül iki)
-  text = text.replace(/\b(\d+)[,](\d+)\b/g, (_, whole, frac) => {
-    if (frac === "5") return `${numberToTurkish(parseInt(whole, 10))} buçuk`;
-    return `${numberToTurkish(parseInt(whole, 10))} virgül ${numberToTurkish(parseInt(frac, 10))}`;
-  });
-
-  // Sayı birimleri (yalnızca sayıdan hemen sonra gelen km, kg, sa, dk, vb.)
-  for (const [k, v] of Object.entries(NUMBER_UNITS)) {
-    text = text.replace(new RegExp(`(\\d+)\\s*${k}\\b`, "gi"), (_, num) => `${num} ${v}`);
-  }
-
-  // Yüzdeler (%25)
-  text = text.replace(/%\s*(\d+)/g, (_, n) => `yüzde ${numberToTurkish(parseInt(n, 10))}`);
-
-  // Para birimleri
-  text = text.replace(/\b(\d+)\s*(?:TL|tl|₺)\b/g, (_, n) => `${numberToTurkish(parseInt(n, 10))} lira`);
-  text = text.replace(/\$\s*(\d+)\b/g, (_, n) => `${numberToTurkish(parseInt(n, 10))} dolar`);
-  text = text.replace(/€\s*(\d+)\b/g, (_, n) => `${numberToTurkish(parseInt(n, 10))} euro`);
-
-  // Sıra sayıları (Örn: 1. gün -> birinci gün)
-  text = text.replace(/\b(\d+)\.(?=\s+[A-ZÇĞİÖŞÜa-zçğıöşü])/g, (_, n) => {
-    return `${numberToTurkish(parseInt(n, 10))}inci `;
-  });
-
-  // Kalan tüm standart sayılar
-  text = text.replace(/\b\d+\b/g, (n) => numberToTurkish(parseInt(n, 10)));
-
-  // Türkçe küçük harf
-  text = turkishLower(text);
-
-  return text.replace(/\s+/g, " ").trim();
+  return AntaliaText.toModelText(raw);
 }
 
 function encodeText(cleanText) {
-  const ids = [1]; // <bos>
-  for (const ch of cleanText) {
-    if (STOI[ch] !== undefined && STOI[ch] > 2) ids.push(STOI[ch]);
-    else if (ch === " ") ids.push(STOI[" "]);
-  }
-  ids.push(2); // <eos>
-  return ids;
+  return AntaliaText.encode(cleanText);
 }
 
 function splitModelText(text, maxChars = 250, firstChars = 80) {
@@ -664,7 +466,7 @@ async function loadModels() {
   const warm = async () => { for await (const _ of synthPieces("Merhaba.", 1, 0)) {} };
 
   try {
-    const [sessions] = await Promise.all([createAll(opt()), loadForeignDict().catch(() => {})]);
+    const [sessions] = await Promise.all([createAll(opt()), loadTextData()]);
     [sessText, sessSound, sessDec] = sessions;
     await warm();
   } catch (e) {

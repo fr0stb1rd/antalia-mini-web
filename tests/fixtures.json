@@ -1,0 +1,866 @@
+[
+ {
+  "input": "Merhaba, size nasıl yardımcı olabilirim?",
+  "expected": "merhaba, size nasıl yardımcı olabilirim?"
+ },
+ {
+  "input": "Günaydın, hayırlı sabahlar dilerim.",
+  "expected": "günaydın, hayırlı sabahlar dilerim."
+ },
+ {
+  "input": "Evet.",
+  "expected": "evet."
+ },
+ {
+  "input": "Hı hı.",
+  "expected": "hı hı."
+ },
+ {
+  "input": "Tamam!",
+  "expected": "tamam!"
+ },
+ {
+  "input": "O.",
+  "expected": "o."
+ },
+ {
+  "input": "A, E!",
+  "expected": "a, e!"
+ },
+ {
+  "input": "0",
+  "expected": "sıfır"
+ },
+ {
+  "input": "5",
+  "expected": "beş"
+ },
+ {
+  "input": "12",
+  "expected": "on iki"
+ },
+ {
+  "input": "100",
+  "expected": "yüz"
+ },
+ {
+  "input": "101",
+  "expected": "yüz bir"
+ },
+ {
+  "input": "1000",
+  "expected": "bin"
+ },
+ {
+  "input": "1250",
+  "expected": "bin iki yüz elli"
+ },
+ {
+  "input": "1.250",
+  "expected": "bin iki yüz elli"
+ },
+ {
+  "input": "1.250,75",
+  "expected": "bin iki yüz elli virgül yetmiş beş"
+ },
+ {
+  "input": "3,5",
+  "expected": "üç buçuk"
+ },
+ {
+  "input": "4,2",
+  "expected": "dört virgül iki"
+ },
+ {
+  "input": "2,75",
+  "expected": "iki virgül yetmiş beş"
+ },
+ {
+  "input": "1,05",
+  "expected": "bir virgül sıfır beş"
+ },
+ {
+  "input": "3,14159",
+  "expected": "üç virgül bir dört bir beş dokuz"
+ },
+ {
+  "input": "1000000",
+  "expected": "bir sıfır sıfır sıfır sıfır sıfır sıfır"
+ },
+ {
+  "input": "2500000",
+  "expected": "iki beş sıfır sıfır sıfır sıfır sıfır"
+ },
+ {
+  "input": "-5 derece",
+  "expected": "eksi beş derece"
+ },
+ {
+  "input": "−5 derece",
+  "expected": "eksi beş derece"
+ },
+ {
+  "input": "12'nci",
+  "expected": "on ikinci"
+ },
+ {
+  "input": "2.si",
+  "expected": "ikincisi"
+ },
+ {
+  "input": "1. gün",
+  "expected": "birinci gün"
+ },
+ {
+  "input": "2. Abdülhamit",
+  "expected": "iki. abdülhamit"
+ },
+ {
+  "input": "3. kat",
+  "expected": "üçüncü kat"
+ },
+ {
+  "input": "Sıra numaranız 12.",
+  "expected": "sıra numaranız on iki."
+ },
+ {
+  "input": "2. Dünya Savaşı",
+  "expected": "ikinci dünya savaşı"
+ },
+ {
+  "input": "5. Uluslararası Kongre",
+  "expected": "beşinci uluslararası kongre"
+ },
+ {
+  "input": "XIX. yüzyıl",
+  "expected": "iksiiks. yüzyıl"
+ },
+ {
+  "input": "II. Abdülhamid",
+  "expected": "ikinci abdülhamid"
+ },
+ {
+  "input": "Warcraft III",
+  "expected": "warcraft üç"
+ },
+ {
+  "input": "I. Dünya",
+  "expected": "birinci dünya"
+ },
+ {
+  "input": "12345",
+  "expected": "bir iki üç dört beş"
+ },
+ {
+  "input": "007",
+  "expected": "sıfır sıfır yedi"
+ },
+ {
+  "input": "045",
+  "expected": "sıfır kırk beş"
+ },
+ {
+  "input": "A4",
+  "expected": "a dört"
+ },
+ {
+  "input": "mp3",
+  "expected": "mp üç"
+ },
+ {
+  "input": "5kg",
+  "expected": "beş kilogram"
+ },
+ {
+  "input": "COVID19",
+  "expected": "kovid on dokuz"
+ },
+ {
+  "input": "52EB4297",
+  "expected": "elli iki e be dört bin iki yüz doksan yedi"
+ },
+ {
+  "input": "34KAB123",
+  "expected": "otuz dört ka a be yüz yirmi üç"
+ },
+ {
+  "input": "15.10.2026",
+  "expected": "on beş ekim iki bin yirmi altı"
+ },
+ {
+  "input": "15/10/2026",
+  "expected": "on beş ekim iki bin yirmi altı"
+ },
+ {
+  "input": "2026-10-15",
+  "expected": "on beş ekim iki bin yirmi altı"
+ },
+ {
+  "input": "32.13.2026",
+  "expected": "otuz iki virgül on üç.iki bin yirmi altı"
+ },
+ {
+  "input": "14:30",
+  "expected": "on dört otuz"
+ },
+ {
+  "input": "09:15",
+  "expected": "dokuz on beş"
+ },
+ {
+  "input": "10:00",
+  "expected": "on"
+ },
+ {
+  "input": "15:30'da",
+  "expected": "on beş otuzda"
+ },
+ {
+  "input": "1:02:03",
+  "expected": "bir saat iki dakika üç saniye"
+ },
+ {
+  "input": "0:45",
+  "expected": "sıfır kırk beş"
+ },
+ {
+  "input": "Pzt",
+  "expected": "pazartesi"
+ },
+ {
+  "input": "Salı-Cuma",
+  "expected": "salı ile cuma"
+ },
+ {
+  "input": "Pazartesi - Cuma",
+  "expected": "pazartesi ile cuma"
+ },
+ {
+  "input": "%25",
+  "expected": "yüzde yirmi beş"
+ },
+ {
+  "input": "% 18",
+  "expected": "yüzde on sekiz"
+ },
+ {
+  "input": "18 %",
+  "expected": "yüzde on sekiz"
+ },
+ {
+  "input": "2.450 TL",
+  "expected": "iki bin dört yüz elli lira"
+ },
+ {
+  "input": "₺12,50",
+  "expected": "on iki lira elli kuruş"
+ },
+ {
+  "input": "12,50 TL",
+  "expected": "on iki lira elli kuruş"
+ },
+ {
+  "input": "$5",
+  "expected": "beş dolar"
+ },
+ {
+  "input": "€10",
+  "expected": "on avro"
+ },
+ {
+  "input": "100 USD",
+  "expected": "yüz dolar"
+ },
+ {
+  "input": "₺2.350'dir",
+  "expected": "iki bin üç yüz elli liradır"
+ },
+ {
+  "input": "5 km",
+  "expected": "beş kilometre"
+ },
+ {
+  "input": "2 L su",
+  "expected": "iki litre su"
+ },
+ {
+  "input": "108L",
+  "expected": "yüz sekiz le"
+ },
+ {
+  "input": "m²",
+  "expected": "m iki"
+ },
+ {
+  "input": "3m2",
+  "expected": "üç metrekare"
+ },
+ {
+  "input": "90 km/s",
+  "expected": "saatte doksan kilometre"
+ },
+ {
+  "input": "2x1 tablet",
+  "expected": "iki defa bir tablet"
+ },
+ {
+  "input": "günde 2x1",
+  "expected": "günde iki defa bir"
+ },
+ {
+  "input": "30x40",
+  "expected": "otuza kırk"
+ },
+ {
+  "input": "120/80 mmHg",
+  "expected": "yüz yirmiye seksen milimetre cıva"
+ },
+ {
+  "input": "3/4",
+  "expected": "dörtte üç"
+ },
+ {
+  "input": "7/24",
+  "expected": "yedi yirmi dört"
+ },
+ {
+  "input": "45/3",
+  "expected": "kırk beş bölü üç"
+ },
+ {
+  "input": "2026/1847",
+  "expected": "iki bin yirmi altı bölü bin sekiz yüz kırk yedi"
+ },
+ {
+  "input": "10 mg/kg",
+  "expected": "kilogram başına on miligram"
+ },
+ {
+  "input": "5 ml",
+  "expected": "beş mililitre"
+ },
+ {
+  "input": "250 kcal",
+  "expected": "iki yüz elli kilokalori"
+ },
+ {
+  "input": "MB/sn",
+  "expected": "megabayt bölü saniye"
+ },
+ {
+  "input": "km/sa",
+  "expected": "kilometre bölü saat"
+ },
+ {
+  "input": "0212 555 12 34",
+  "expected": "sıfır iki yüz on iki, beş yüz elli beş, on iki, otuz dört"
+ },
+ {
+  "input": "+90 532 123 45 67",
+  "expected": "artı doksan, beş yüz otuz iki, yüz yirmi üç, kırk beş, altmış yedi"
+ },
+ {
+  "input": "0532-123-45-67",
+  "expected": "sıfır beş yüz otuz iki, yüz yirmi üç, kırk beş, altmış yedi"
+ },
+ {
+  "input": "destek@ornek.com",
+  "expected": "destek et ornek nokta kom"
+ },
+ {
+  "input": "ILKER.SAHIN85@GMAIL.COM",
+  "expected": "ilker nokta sahin seksen beş et cimeyl nokta kom"
+ },
+ {
+  "input": "www.google.com",
+  "expected": "dabılyu dabılyu dabılyu nokta google nokta kom"
+ },
+ {
+  "input": "https://patientdesk.ai/yol",
+  "expected": "peyşınt desk nokta a i bölü yol"
+ },
+ {
+  "input": "Kadıköy/İstanbul",
+  "expected": "kadıköy istanbul"
+ },
+ {
+  "input": "Tel: 0212 / Faks: 0216",
+  "expected": "telefon: sıfır iki yüz on iki, faks: sıfır iki yüz on altı"
+ },
+ {
+  "input": "TR12 0001 0000 0000 0000 0000 01",
+  "expected": "te re, bir iki, sıfır sıfır sıfır bir, sıfır sıfır sıfır sıfır, sıfır sıfır sıfır sıfır, sıfır sıfır sıfır sıfır, sıfır sıfır sıfır sıfır, sıfır bir"
+ },
+ {
+  "input": "No: 12 D: 5",
+  "expected": "numara on iki daire beş"
+ },
+ {
+  "input": "Kimlik No 123",
+  "expected": "kimlik numarası yüz yirmi üç"
+ },
+ {
+  "input": "s. 45",
+  "expected": "sayfa kırk beş"
+ },
+ {
+  "input": "D Blok",
+  "expected": "de blok"
+ },
+ {
+  "input": "C blok",
+  "expected": "ce blok"
+ },
+ {
+  "input": "K vitamini",
+  "expected": "ka vitamini"
+ },
+ {
+  "input": "Ahmet K.",
+  "expected": "ahmet ka."
+ },
+ {
+  "input": "D vitamini",
+  "expected": "de vitamini"
+ },
+ {
+  "input": "Dr. Ayşe Yılmaz",
+  "expected": "doktor ayşe yılmaz"
+ },
+ {
+  "input": "dr.ayşe",
+  "expected": "doktor ayşe"
+ },
+ {
+  "input": "Prof. Dr. Mehmet",
+  "expected": "profesör doktor mehmet"
+ },
+ {
+  "input": "Doç. Ahmet",
+  "expected": "doçent ahmet"
+ },
+ {
+  "input": "Av. Elif",
+  "expected": "avukat elif"
+ },
+ {
+  "input": "Mah. Cad. Sok. Apt.",
+  "expected": "mahallesi caddesi sokak apt."
+ },
+ {
+  "input": "düzene sok.",
+  "expected": "düzene sok."
+ },
+ {
+  "input": "30 DT.",
+  "expected": "otuz dete."
+ },
+ {
+  "input": "T.C.",
+  "expected": "tece"
+ },
+ {
+  "input": "A.B.D.",
+  "expected": "abede"
+ },
+ {
+  "input": "Sn. Müdür",
+  "expected": "sayın müdür"
+ },
+ {
+  "input": "Sn./-",
+  "expected": "sn. -"
+ },
+ {
+  "input": "Hz. Ali",
+  "expected": "hazreti ali"
+ },
+ {
+  "input": "bkz. sayfa 3",
+  "expected": "bakınız sayfa üç"
+ },
+ {
+  "input": "vb.",
+  "expected": "ve benzeri"
+ },
+ {
+  "input": "vs.",
+  "expected": "vesaire"
+ },
+ {
+  "input": "örn. test",
+  "expected": "örneğin test"
+ },
+ {
+  "input": "no. 5",
+  "expected": "numara beş"
+ },
+ {
+  "input": "ltd. şti.",
+  "expected": "limited şirketi"
+ },
+ {
+  "input": "MB/sn",
+  "expected": "megabayt bölü saniye"
+ },
+ {
+  "input": "SGK",
+  "expected": "segeka"
+ },
+ {
+  "input": "TBMM",
+  "expected": "tebememe"
+ },
+ {
+  "input": "ATM",
+  "expected": "ateme"
+ },
+ {
+  "input": "THY",
+  "expected": "teheye"
+ },
+ {
+  "input": "CHP",
+  "expected": "cehepe"
+ },
+ {
+  "input": "KDV",
+  "expected": "kadeve"
+ },
+ {
+  "input": "KPSS",
+  "expected": "kapesese"
+ },
+ {
+  "input": "TSH",
+  "expected": "teseha"
+ },
+ {
+  "input": "MHRS",
+  "expected": "meharese"
+ },
+ {
+  "input": "HES",
+  "expected": "hes"
+ },
+ {
+  "input": "CEO",
+  "expected": "siio"
+ },
+ {
+  "input": "TV",
+  "expected": "tivi"
+ },
+ {
+  "input": "FBI",
+  "expected": "efbiay"
+ },
+ {
+  "input": "IŞIK",
+  "expected": "ışık"
+ },
+ {
+  "input": "NATO",
+  "expected": "nato"
+ },
+ {
+  "input": "RANDEVUNUZ ONAYLANDI",
+  "expected": "randevunuz onaylandı"
+ },
+ {
+  "input": "SGK, SMS ve TBMM",
+  "expected": "segeka, esemes ve tebememe"
+ },
+ {
+  "input": "K blok",
+  "expected": "ke blok"
+ },
+ {
+  "input": "pH dengesi",
+  "expected": "pi eyç dengesi"
+ },
+ {
+  "input": "H2O",
+  "expected": "haş iki o"
+ },
+ {
+  "input": "H. pylori",
+  "expected": "ha pilori"
+ },
+ {
+  "input": "X-ray",
+  "expected": "iksrey"
+ },
+ {
+  "input": "HbA1c normal",
+  "expected": "ha be a bir ce normal"
+ },
+ {
+  "input": "A Rh(+) kan",
+  "expected": "a eraj pozitif kan"
+ },
+ {
+  "input": "0 Rh(-)",
+  "expected": "sıfır eraj negatif"
+ },
+ {
+  "input": "hane 1234",
+  "expected": "hane bir iki üç dört"
+ },
+ {
+  "input": "hanesi 567890",
+  "expected": "hanesi beş altı yedi sekiz dokuz sıfır"
+ },
+ {
+  "input": "WhatsApp",
+  "expected": "whatsapp"
+ },
+ {
+  "input": "iPhone",
+  "expected": "iphone"
+ },
+ {
+  "input": "ChatGPT",
+  "expected": "çet ci pi ti"
+ },
+ {
+  "input": "PatientDesk",
+  "expected": "peyşınt desk"
+ },
+ {
+  "input": "LinkedIn",
+  "expected": "linkedin"
+ },
+ {
+  "input": "YouTube",
+  "expected": "youtube"
+ },
+ {
+  "input": "PatientDesk'e",
+  "expected": "peyşınt desk'e"
+ },
+ {
+  "input": "iPhone'un",
+  "expected": "iphone'un"
+ },
+ {
+  "input": "Instagram",
+  "expected": "instagram"
+ },
+ {
+  "input": "Intel işlemci",
+  "expected": "intel işlemci"
+ },
+ {
+  "input": "Istanbul",
+  "expected": "istanbul"
+ },
+ {
+  "input": "ISTANBUL",
+  "expected": "istanbul"
+ },
+ {
+  "input": "Iran",
+  "expected": "iran"
+ },
+ {
+  "input": "McDonald's",
+  "expected": "mekdonalds"
+ },
+ {
+  "input": "Coca-Cola",
+  "expected": "koka kola"
+ },
+ {
+  "input": "BluTV",
+  "expected": "blu ti vi"
+ },
+ {
+  "input": "e-Devlet",
+  "expected": "e-devlet"
+ },
+ {
+  "input": "Toplantı WhatsApp üzerinden",
+  "expected": "toplantı whatsapp üzerinden"
+ },
+ {
+  "input": "GitHub reposu",
+  "expected": "git hab reposu"
+ },
+ {
+  "input": "Spotify listesi",
+  "expected": "spotifay listesi"
+ },
+ {
+  "input": "StarTrekFan",
+  "expected": "star trek fen"
+ },
+ {
+  "input": "eBay satıcısı",
+  "expected": "ibey satıcısı"
+ },
+ {
+  "input": "OpenAI modeli",
+  "expected": "opın ey ay modeli"
+ },
+ {
+  "input": "Van Drayv",
+  "expected": "van drayv"
+ },
+ {
+  "input": "Skayp",
+  "expected": "skayp"
+ },
+ {
+  "input": "Sıcaklık 37°C",
+  "expected": "sıcaklık otuz yedi derece"
+ },
+ {
+  "input": "5 + 3 = 8",
+  "expected": "beş artı üç eşittir sekiz"
+ },
+ {
+  "input": "#gündem",
+  "expected": "heşteg gündem"
+ },
+ {
+  "input": "**kalın**",
+  "expected": "kalın"
+ },
+ {
+  "input": "__alt__",
+  "expected": "alt"
+ },
+ {
+  "input": "A & B",
+  "expected": "a ve be"
+ },
+ {
+  "input": "• madde",
+  "expected": "madde"
+ },
+ {
+  "input": "😀 selam 👋",
+  "expected": "selam"
+ },
+ {
+  "input": "a—b",
+  "expected": "a-b"
+ },
+ {
+  "input": "a–b",
+  "expected": "a-b"
+ },
+ {
+  "input": "a…b",
+  "expected": "a...b"
+ },
+ {
+  "input": "''alıntı''",
+  "expected": "alıntı"
+ },
+ {
+  "input": "“tırnak”",
+  "expected": "tırnak"
+ },
+ {
+  "input": "‘tek’",
+  "expected": "'tek'"
+ },
+ {
+  "input": "2 GB'lık",
+  "expected": "iki gigabaytlık"
+ },
+ {
+  "input": "mcg'ya",
+  "expected": "mcg'ya"
+ },
+ {
+  "input": "dördün",
+  "expected": "dördün"
+ },
+ {
+  "input": "14:30'daki",
+  "expected": "on dört otuzdakı"
+ },
+ {
+  "input": "liraya",
+  "expected": "liraya"
+ },
+ {
+  "input": "lira'dan",
+  "expected": "liradan"
+ },
+ {
+  "input": "dörtte",
+  "expected": "dörtte"
+ },
+ {
+  "input": "ikiye",
+  "expected": "ikiye"
+ },
+ {
+  "input": "otuza",
+  "expected": "otuza"
+ },
+ {
+  "input": "dörtte üç",
+  "expected": "dörtte üç"
+ },
+ {
+  "input": "Siparişiniz yola çıktı, yarın sabah kapınızda olacak.",
+  "expected": "siparişiniz yola çıktı, yarın sabah kapınızda olacak."
+ },
+ {
+  "input": "Randevunuz 14 Ekim Salı günü saat 15:30'da, Dr. Ayşe Yılmaz ile.",
+  "expected": "randevunuz on dört ekim salı günü saat on beş otuzda, doktor ayşe yılmaz ile."
+ },
+ {
+  "input": "Toplam tutar 1.250,75 TL. Ödemeyi 3 taksitle yapabilirsiniz.",
+  "expected": "toplam tutar bin iki yüz elli lira yetmiş beş kuruş. ödemeyi üç taksitle yapabilirsiniz."
+ },
+ {
+  "input": "Bize 0212 555 12 34 numarasından veya destek@ornek.com adresinden ulaşabilirsiniz.",
+  "expected": "bize sıfır iki yüz on iki, beş yüz elli beş, on iki, otuz dört numarasından veya destek et ornek nokta kom adresinden ulaşabilirsiniz."
+ },
+ {
+  "input": "Kargonuz yola çıktı; tahmini teslimat tarihi 9 Ekim 2026, Perşembe.",
+  "expected": "kargonuz yola çıktı; tahmini teslimat tarihi dokuz ekim iki bin yirmi altı, perşembe."
+ },
+ {
+  "input": "Marketten 5 kg un, 2 lt süt ve 1 düzine yumurta aldım.",
+  "expected": "marketten beş kilogram un, iki litre süt ve bir düzine yumurta aldım."
+ },
+ {
+  "input": "Uçuşunuz THY ile saat 09:15'te kalkacaktır, iyi yolculuklar.",
+  "expected": "uçuşunuz teheye ile saat dokuz on beşte kalkacaktır, iyi yolculuklar."
+ },
+ {
+  "input": "Önde gelen isimler toplantıya katıldı, ılık bir karşılama oldu.",
+  "expected": "önde gelen isimler toplantıya katıldı, ılık bir karşılama oldu."
+ },
+ {
+  "input": "Iğdır'dan selamlar, ıspanak aldım.",
+  "expected": "ığdır'dan selamlar, ıspanak aldım."
+ },
+ {
+  "input": "   ",
+  "expected": ""
+ },
+ {
+  "input": "",
+  "expected": ""
+ },
+ {
+  "input": "123",
+  "expected": "yüz yirmi üç"
+ },
+ {
+  "input": "...",
+  "expected": "..."
+ },
+ {
+  "input": "—",
+  "expected": "-"
+ }
+]

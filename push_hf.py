@@ -69,6 +69,9 @@ for in-browser inference (produced by [fr0stb1rd/antalia-mini-web](https://githu
 - `sound_stage.onnx`: DiT Flow-Matching generator → mel frames
 - `decoder.onnx`: Vocos ConvNeXt vocoder → 48 kHz waveform
 - `foreign_dict.json`: CMU English to Turkish phonetic dictionary (80k+ words)
+- `foreign_parts.json`: CamelCase part respellings for brand words (37k entries)
+- `known_words.json`: frequent Turkish words (anti-respell shield, 6k entries)
+- `english_i.json`: dotted/dotless I decision list for English words (14k entries)
 
 Live: https://fr0stb1rd.github.io/antalia-mini-web/
 

@@ -240,6 +240,9 @@ def main(check: bool = False, steps: int = 8, cfg: float = 2.0):
     # 4. foreign_dict.json (CMU İngilizce + tr_vocab fonetik sözlüğü)
     build_foreign_dictionary(OUT / "foreign_dict.json")
 
+    # 5. tarayıcı normalizer sözlükleri (normalize.js verisi)
+    build_web_dicts()
+
     if check:
         smoke_check(acoustic, vocoder, steps, cfg)
     print(f"Başarıyla tamamlandı. Modeller: {OUT}")
@@ -277,6 +280,23 @@ def build_foreign_dictionary(out_file: Path):
         print("Uyarı: cmudict bulunamadı, foreign_dict.json derlenemedi.")
     except Exception as e:
         print(f"Uyarı: foreign_dict.json oluşturulurken hata: {e}")
+
+
+def build_web_dicts() -> None:
+    """normalize.js tarayıcı sözlükleri (known_words + english_i + foreign_parts).
+
+    scripts/build_web_dicts.py'deki tek kaynağı çağırır; import hatası
+    export'u durdurmaz (uyarı verir), CI validate adımı varlığı assert eder.
+    """
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from build_web_dicts import main as build_dicts_main
+
+        build_dicts_main()
+    except ImportError as e:
+        print(f"Uyarı: web sözlükleri derlenemedi (import): {e}")
+    except Exception as e:
+        print(f"Uyarı: web sözlükleri derlenirken hata: {e}")
 
 
 def smoke_check(acoustic, vocoder, steps, cfg):
